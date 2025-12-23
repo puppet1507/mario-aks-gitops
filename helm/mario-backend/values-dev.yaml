@@ -1,0 +1,31 @@
+replicaCount: 1
+
+image:
+  repository: docker.io/puppet666/mario-backend
+  tag: dev-b33e527
+  pullPolicy: IfNotPresent
+
+service:
+  name: mario-backend-service
+  type: ClusterIP
+  port: 8000
+
+resources:
+  requests:
+    memory: "32Mi"
+    cpu: "25m"
+  limits:
+    memory: "64Mi"
+    cpu: "50m"
+
+livenessProbe:
+  path: /api/hello
+  port: 8000
+  initialDelaySeconds: 15
+  periodSeconds: 10
+
+readinessProbe:
+  path: /api/hello
+  port: 8000
+  initialDelaySeconds: 5
+  periodSeconds: 5

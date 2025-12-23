@@ -1,0 +1,39 @@
+replicaCount: 1
+
+image:
+  repository: docker.io/puppet666/mario-frontend
+  tag: dev-72bfede
+  pullPolicy: IfNotPresent
+
+service:
+  name: mario-frontend-service
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  annotations: {}
+  backend:
+    serviceName: mario-backend-service
+    servicePort: 8000
+
+resources:
+  requests:
+    memory: "64Mi"
+    cpu: "50m"
+  limits:
+    memory: "128Mi"
+    cpu: "100m"
+
+livenessProbe:
+  path: /
+  port: 80
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+readinessProbe:
+  path: /
+  port: 80
+  initialDelaySeconds: 5
+  periodSeconds: 5
+

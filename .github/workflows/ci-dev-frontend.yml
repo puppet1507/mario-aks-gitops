@@ -1,0 +1,73 @@
+name: CI - Dev Frontend Build
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'app/frontend/**'
+  workflow_dispatch:
+permissions:
+  contents: write
+env:
+  IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/mario-frontend
+jobs:
+  dev-frontend:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set variables
+        id: vars
+        run: |
+          SHA_SHORT=$(echo $GITHUB_SHA | cut -c1-7)
+          TAG="dev-${SHA_SHORT}"
+          echo "tag=${TAG}" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./app/frontend
+          load: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.tag }}
+
+      - name: Scan image with Trivy
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.tag }}
+          format: 'table'
+          exit-code: '1'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITICAL,HIGH'
+
+      - name: Push image to Docker Hub
+        run: |
+          docker push ${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.tag }}
+
+      - name: Update values-dev.yaml
+        if: success()
+        run: |
+          sed -i "s|tag: .*|tag: ${{ steps.vars.outputs.tag }}|g" helm/mario-frontend/values-dev.yaml
+
+      - name: Commit changes
+        if: success()
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          git add helm/mario-frontend/values-dev.yaml
+          git commit -m "dev-frontend: update image tag ${{ steps.vars.outputs.tag }}"
+          git pull --rebase origin develop
+          git push origin develop
+
