@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: docker.io/puppet666/mario-frontend
-  tag: dev-a7d2c4f
+  tag: dev-5e2697d
   pullPolicy: IfNotPresent
 
 service:
