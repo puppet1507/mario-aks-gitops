@@ -11,7 +11,7 @@ spec:
   rules:
   - http:
       paths:
-      - path: /argo
+      - path: /api/webhook
         pathType: Prefix
         backend:
           service:
