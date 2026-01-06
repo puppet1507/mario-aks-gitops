@@ -27,6 +27,14 @@ sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
 rm argocd-linux-amd64
 ```
 
+## Clone Repository
+```bash
+# Clone project về máy
+cd ~
+git clone https://github.com/puppet1507/mario-aks-gitops.git
+cd mario-aks-gitops
+```
+
 ## Azure Login
 ```bash
 # Login vào Azure
@@ -59,7 +67,7 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 # Lấy password ArgoCD (username: admin)
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
-# Mở ArgoCD UI (truy cập https://localhost:8080)
+# Mở ArgoCD UI (truy cập https://<your-vm-ip>:8080)
 kubectl port-forward svc/argocd-server -n argocd 8080:443 --address 0.0.0.0
 
 # Deploy ứng dụng Mario qua ArgoCD
@@ -91,8 +99,11 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 # Lấy password ArgoCD (username: admin)
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 
-# Mở ArgoCD UI (truy cập https://localhost:8080)
+# Mở ArgoCD UI (truy cập https://<your-vm-ip>:8080)
 kubectl port-forward svc/argocd-server -n argocd 8080:443 --address 0.0.0.0
+
+# Mở nginx ingress để truy cập app (http://<your-vm-ip>:8081)
+kubectl port-forward svc/nginx-ingress-ingress-nginx-controller 8081:80 -n ingress-nginx
 
 # Deploy ứng dụng Mario qua ArgoCD
 cd ~/mario-aks-gitops
