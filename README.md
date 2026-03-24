@@ -1,5 +1,5 @@
 # Mario AKS GitOps - Quick Setup
-Demo: [Google Drive](https://drive.google.com/file/d/17vlv_vR_-ewYUdhIsh9acuo33fPiDNul/view?usp=drive_link)
+Demo: [Google Drive](https://drive.google.com/drive/folders/1ZFN17gVmOwpiSlCxA7ZIl3kA9Z8jfimc?usp=sharing)
 
 ## Install Tools
 ```bash
