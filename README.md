@@ -1,4 +1,5 @@
 # Mario AKS GitOps - Quick Setup
+Xem Demo tại: [Google Drive](https://drive.google.com/file/d/17vlv_vR_-ewYUdhIsh9acuo33fPiDNul/view?usp=drive_link)
 
 ## Install Tools
 ```bash
